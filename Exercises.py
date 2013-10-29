@@ -91,7 +91,7 @@ def printTreeBFS(tree):
 			q.append(tree.right)
 
 
-def numberOfWays(n):
+def numberOfWays(n, cache):
 	'''number of ways to climb a staircase
 
 	can climb 1, 2, or 3 steps at a time'''
@@ -105,6 +105,11 @@ def numberOfWays(n):
 	elif n == 3:
 		return 4
 	else:
-		return 3 + numberOfWays(n - 1) + numberOfWays(n - 2) + numberOfWays(n - 3)
+		key = 'numberOfWays(' + str(n) + ')'
+		if key in cache:
+			return cache[key]
+		else:
+			cache[key] = 3 + numberOfWays(n - 1, cache) + numberOfWays(n - 2, cache) + numberOfWays(n - 3, cache)
+		return cache[key]
 
 
