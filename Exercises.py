@@ -92,11 +92,11 @@ def printTreeBFS(tree):
 
 
 def numberOfWays(n, cache):
-	'''number of ways to climb a staircase
+	'''number of ways to climb a staircase of n steps
 
 	can climb 1, 2, or 3 steps at a time'''
 
-	if n == 0:
+	if n < 1:
 		return 0
 	elif n == 1:
 		return 1
@@ -109,7 +109,79 @@ def numberOfWays(n, cache):
 		if key in cache:
 			return cache[key]
 		else:
-			cache[key] = 3 + numberOfWays(n - 1, cache) + numberOfWays(n - 2, cache) + numberOfWays(n - 3, cache)
+			cache[key] = numberOfWays(n - 1, cache) + numberOfWays(n - 2, cache) + numberOfWays(n - 3, cache)
+		return cache[key]
+
+def numberOfWaysTaxi(row, col, cache):
+	'''number of ways to get from start to goal
+
+	NxN grid; only move right or down'''
+	if row == 0 and col == 0:
+		return 0
+	elif row == 0 and col == 1:
+		return 1
+	elif row == 1 and col == 0:
+		return 1
+	else:
+		key = (row, col)
+		if key in cache:
+			return cache[key]
+		elif col == 0:
+			# on left border
+			cache[key] = numberOfWaysTaxi(row-1, col, cache)
+		elif row == 0:
+			# on top border
+			cache[key] = numberOfWaysTaxi(row, col-1, cache)
+		else:
+			cache[key] = numberOfWaysTaxi(row-1, col, cache) + numberOfWaysTaxi(row, col-1, cache)
+		print cache[key]
+		return cache[key]
+#numberOfWaysTaxi(10, 10, {})
+
+def nChooseKCount(n, k, cache):
+	'''compute the number of ways of choosing k elements from a set of n elements'''
+
+	if k == n:
+		return 1
+	elif k == 1:
+		return n
+	elif k == 0:
+		return 1
+	else:
+		key = (n, k)
+		if key in cache:
+			return cache[key]
+		else:
+			cache[key] = nChooseKCount(n-1, k-1, cache) + nChooseKCount(n-1, k, cache)
 		return cache[key]
 
 
+# a set is a list of unique elements (use 'list' not 'set')
+def subsets(s):
+	'''compute list of subsets from a list of unique items'''
+	if s == []:
+		return [[]]
+	else:
+		rest = subsets(s[1:])
+		return rest + map(lambda x: ([s[0]] + x), rest)
+
+def subsets_k(s, k):
+	def subsets(s):
+		'''compute list of subsets from a list of unique items'''
+		if s == []:
+			return [[]]
+		else:
+			rest = subsets(s[1:])
+			return rest + map(lambda x: ([s[0]] + x), rest)
+	r = subsets(s)
+	return filter(lambda x: len(x) == k, r)
+
+
+def sublists(big_list, selected_so_far):
+	if big_list == []:
+		return [selected_so_far]
+	else:
+		curr_element = big_list[0]
+		rest_of_big_list = big_list[1:]
+		return (sublists(rest_of_big_list, selected_so_far) + 
+			sublists(rest_of_big_list, selected_so_far + [curr_element]))
